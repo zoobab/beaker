@@ -107,9 +107,9 @@ module Beaker
           #   StopSignal: "SIGRTMIN+3"
           #
           #
-          unless host['run_options'].nil?
+          unless host['docker_runconfig'].nil?
             container_opts ||= {}
-            host['run_options'].each do |key, value|
+            host['docker_runconfig'].each do |key, value|
               container_opts[key] = value
             end
           end
