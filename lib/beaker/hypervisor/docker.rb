@@ -100,16 +100,16 @@ module Beaker
           end
 
           # Examples
-          # docker_options
+          # run_options:
           #   Volumes:
           #     "/volumes/data": {}
           #   Tty: true
           #   StopSignal: "SIGRTMIN+3"
           #
           #
-          unless host['docker_options'].nil?
+          unless host['run_options'].nil?
             container_opts ||= {}
-            host['docker_options'].each do |key, value|
+            host['run_options'].each do |key, value|
               container_opts[key] = value
             end
           end
