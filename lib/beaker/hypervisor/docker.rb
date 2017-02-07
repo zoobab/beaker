@@ -81,6 +81,40 @@ module Beaker
             end
           end
 
+
+          # Setting custom Docker run options
+          # Please consult the API to figure out where
+          # your option belongs to (https://docs.docker.com/engine/api/v1.25/)
+
+          # Examples
+          # HostConfig:
+          #   SecurityOpt: ["seccomp=unconfined"]
+          #   Tmpfs:
+          #     "/run": ""
+          #     "/run/lock": ""
+          unless host['docker_hostconfig'].nil?
+            container_opts['HostConfig'] ||= {}
+            host['docker_hostconfig'].each do |key, value|
+              container_opts['HostConfig'][key] = value
+            end
+          end
+
+          # Examples
+          # docker_options
+          #   Volumes:
+          #     "/volumes/data": {}
+          #   Tty: true
+          #   StopSignal: "SIGRTMIN+3"
+          #
+          #
+          unless host['docker_options'].nil?
+            container_opts ||= {}
+            host['docker_options'].each do |key, value|
+              container_opts[key] = value
+            end
+          end
+
+
           if @options[:provision]
             if host['docker_container_name']
               container_opts['name'] = host['docker_container_name']
@@ -185,8 +219,8 @@ module Beaker
           dockerfile = File.read(host['dockerfile'])
         else
           raise "requested Dockerfile #{host['dockerfile']} does not exist"
-        end 
-      else 
+        end
+      else
         raise("Docker image undefined!") if (host['image']||= nil).to_s.empty?
 
         # specify base image
