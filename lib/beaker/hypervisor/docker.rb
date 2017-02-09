@@ -143,14 +143,15 @@ module Beaker
         # Talking against a remote docker host which is a normal docker host
         if @docker_type == 'docker' && ENV['DOCKER_HOST']
           ip = URI.parse(ENV['DOCKER_HOST']).host
+          port = container.json["NetworkSettings"]["Ports"]["22/tcp"][0]["HostPort"]
         else
           # Swarm or local docker host
-          ip = container.json["NetworkSettings"]["Ports"]["22/tcp"][0]["HostIp"]
+          # Use pod IP (instead of Host IP)
+          ip = container.json["NetworkSettings"]["IPAddress"]
+          port = '22'
         end
 
         @logger.info("Using docker server at #{ip}")
-        port = container.json["NetworkSettings"]["Ports"]["22/tcp"][0]["HostPort"]
-
         forward_ssh_agent = @options[:forward_ssh_agent] || false
 
         # Update host metadata
