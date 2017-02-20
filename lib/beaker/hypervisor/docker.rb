@@ -50,7 +50,7 @@ module Beaker
         @logger.notify "provisioning #{host.name}"
 
         @logger.debug("Creating image")
-        image = ::Docker::Image.build(dockerfile_for(host), { :rm => true })
+        image = ::Docker::Image.build(dockerfile_for(host), { :rm => true, :pull => true })
 
         if @docker_type == 'swarm'
           image_name = "#{@registry}/beaker/#{image.id}"
@@ -146,7 +146,7 @@ module Beaker
           port = container.json["NetworkSettings"]["Ports"]["22/tcp"][0]["HostPort"]
         else
           # Swarm or local docker host
-          # Use pod IP (instead of Host IP)
+          # Use container IP (instead of Host IP)
           ip = container.json["NetworkSettings"]["IPAddress"]
           port = '22'
         end
