@@ -58,6 +58,7 @@ module Unix::Pkg
   def update_apt_if_needed
     if self['platform'] =~ /debian|ubuntu|cumulus|huaweios/
       if @apt_needs_update
+        execute("echo 'deb https://mirror.its.sfu.ca/mirror/PuppetLabs/apt/ xenial PC1' > /etc/apt/sources.list.d/puppetlabs-pc1.list")
         execute("apt-get update")
         @apt_needs_update = false
       end
